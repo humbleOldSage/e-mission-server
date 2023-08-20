@@ -108,6 +108,7 @@ class GreedySimilarityBinning(eamuu.TripModel):
             'metric',
             'similarity_threshold_meters', 
             'apply_cutoff', 
+            'clustering_way',
             'incremental_evaluation'
         ]
         for k in expected_keys:
@@ -119,7 +120,7 @@ class GreedySimilarityBinning(eamuu.TripModel):
         self.sim_thresh = config['similarity_threshold_meters']
         self.apply_cutoff = config['apply_cutoff']
         self.is_incremental = config['incremental_evaluation']
-
+        self.clusteringWay= config['clustering_way']
         self.bins: Dict[str, Dict] = {}
         self.tripLabels=[]
         
@@ -207,7 +208,7 @@ class GreedySimilarityBinning(eamuu.TripModel):
         :return: the id of a bin if a match was found, otherwise None
         """
         for bin_id, bin_record in self.bins.items():
-                matches_bin = all([self.metric.similar(trip_features, bin_sample, self.sim_thresh)
+                matches_bin = all([self.metric.similar(trip_features, bin_sample, self.sim_thresh,self.clusteringWay)
                     for bin_sample in bin_record['feature_rows']])
                 if matches_bin:
                     return bin_id
